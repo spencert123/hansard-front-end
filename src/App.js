@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { listenerCount } from 'events';
+import { format } from 'util';
 
 function Card(props) {
   return (
@@ -18,30 +19,59 @@ function Card(props) {
   );
 }
 
+function SearchBar(props) {
+  return (
+    <div className="search-bar">
+        <input id="search-bar-input" type="text" placeholder="Search.."/>
+        <button onClick={props.handleSearchOnClick} type="submit">Submit</button>
+    </div>
+  );
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.handleOnClick = this.handleOnClick.bind(this);
+    this.handleSearchOnClick = this.handleSearchOnClick.bind(this);
+    this.state = {
+      mps: [
+        "Diane Abbott",
+        "Diane Aboot"
+      ]
+    }
   }
 
   handleOnClick() {
     alert('hello');
   }
 
+  handleSearchOnClick(e) {
+    e.preventDefault();
+    const searchText = document.getElementById('search-bar-input');
+    const mpList = document.getElementById("mp-list");
+    let mps = this.state.mps;
+
+    if(searchText.value) {
+      mps.push(searchText.value);
+      this.setState({
+        mps: mps
+      });
+    }
+    else {
+      alert('Need to put something in search bar.');
+    }
+  }
+
   render() {
     return (
       <div className="row">
-        <ul>
-          <li>hello</li>
+        <SearchBar handleSearchOnClick={this.handleSearchOnClick}/>
+        <ul id='mp-list'>
+          {this.state.mps.map(mp => (
+            <li key={mp}>{mp}</li>
+          ))}
         </ul>
-        <div className="col-sm-4">
-          <Card featureImage="https://sebhastian.com/static/eb0e936c0ef42ded5c6b8140ece37d3e/fcc29/feature-image.png"
-                title="How To Make Interactive ReactJS Form"
-                description="Let's write some interactive form with React"
-                link="https://sebhastian.com/interactive-react-form"
-                handleOnClick={this.handleOnClick}/>
-        </div>
       </div>
     );
   }
